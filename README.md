@@ -1,3 +1,3 @@
 # CodeDojo
 
-My own space to learn new stuff
+My own space to learn (and maybe master) new stuff
