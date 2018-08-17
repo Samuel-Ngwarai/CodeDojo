@@ -1,6 +1,16 @@
 const puppeteer = require('puppeteer');
 const CREDS = require('./creds');
 
+async function searchGithub(page, stringToSearch) {
+
+	const searchUrl = `https://github.com/search?q=Accounting`;
+
+	await page.goto(searchUrl);
+	await page.waitFor(3*1000);
+
+	await page.screenshot({ path: 'screenshots/github.png'});
+}
+
 async function run() {
 	const browser = await puppeteer.launch({headless: false});
 	const page = await browser.newPage();
@@ -21,14 +31,30 @@ async function run() {
 
 	await page.waitForNavigation();
 
-	const stringToSearch = 'Samuel';
-
-	const searchUrl = `https://github.com/search?q=${stringToSearch}`;
+	//await searchGithub(page, 'Samuel');
+	const searchUrl = `https://github.com/search?q=Accounting`;
 
 	await page.goto(searchUrl);
 	await page.waitFor(3*1000);
 
-	await page.screenshot({ path: 'screenshots/github.png'});
+	const LIST_USERNAME_SELECTOR = '#user_search_results > div.user-list > div:nth-child(INDEX) > div.d-flex.flex-auto > div > div'
+
+	const LENGTH_SELECTOR_CLASS = 'user-list-item';
+
+	let listLength = await page.evaluate((sel) => {
+		return document.getElementsByClassName(sel).length;
+	}, LENGTH_SELECTOR_CLASS);
+
+	for (let i = 1; i <= listLength; i++) {
+		//changing the index to the next child
+		let usernameSelector = LIST_USERNAME_SELECTOR.replace("INDEX", i);
+		
+		let username = await page.evaluate((sel) => {
+			return document.querySelector(sel).getAttribute('href').replace('/', '');
+		}, usernameSelector);
+
+		console.log(i, '. ', username);
+	}
 
 	browser.close();
 }
