@@ -32,14 +32,13 @@ async function run() {
 	await page.waitForNavigation();
 
 	//await searchGithub(page, 'Samuel');
-	const searchUrl = `https://github.com/search?q=Accounting`;
+	const searchUrl = `https://github.com/search?q=Accounting&type=Users`;
 
 	await page.goto(searchUrl);
-	await page.waitFor(3*1000);
+	//await page.waitFor(3*1000);
 
-	const LIST_USERNAME_SELECTOR = '#user_search_results > div.user-list > div:nth-child(INDEX) > div.d-flex.flex-auto > div > div'
-
-	const LENGTH_SELECTOR_CLASS = 'user-list-item';
+	const LIST_USERNAME_SELECTOR = '#user_search_results > div.user-list > div:nth-child(INDEX) > div.d-flex.flex-auto > div > div';
+	const LENGTH_SELECTOR_CLASS = 'user-list-item f5 py-4 d-flex';
 
 	let listLength = await page.evaluate((sel) => {
 		return document.getElementsByClassName(sel).length;
